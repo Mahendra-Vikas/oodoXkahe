@@ -90,20 +90,29 @@ model Trip {
 }
 
 model TripStop {
-  id          String     @id @default(cuid())
-  tripId      String
-  cityName    String
-  country     String?
-  lat         Float?
-  lng         Float?
-  startDate   DateTime
-  endDate     DateTime
-  orderIndex  Int        @default(0)
-  notes       String?
-  createdAt   DateTime   @default(now())
+  id            String     @id @default(cuid())
+  tripId        String
+  cityName      String
+  country       String?
+  lat           Float?
+  lng           Float?
+  placeId       String?
+  startDate     DateTime
+  endDate       DateTime
+  orderIndex    Int        @default(0)
+  notes         String?
+  
+  // Route information
+  routeData     String?         @db.Text  // JSON string with route polyline
+  travelMode    TravelMode      @default(DRIVING)
+  distanceTo    Float?          // Distance to next stop in km
+  durationTo    Int?            // Duration to next stop in minutes
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 
-  trip        Trip       @relation(fields: [tripId], references: [id], onDelete: Cascade)
-  activities  Activity[]
+  trip          Trip       @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  activities    Activity[]
 
   @@map("trip_stops")
 }
@@ -219,4 +228,14 @@ enum ChecklistCat {
   HEALTH
   TOILETRIES
   OTHER
+}
+
+enum TravelMode {
+  DRIVING
+  WALKING
+  TRANSIT
+  BICYCLING
+  FLYING
+  TRAIN
+  BUS
 }

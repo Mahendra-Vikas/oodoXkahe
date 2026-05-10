@@ -12,6 +12,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
+    if (password.length < 4) {
+      return NextResponse.json(
+        { error: 'Password must be at least 4 characters' },
+        { status: 400 }
+      )
+    }
+
     const exists = await prisma.user.findUnique({ where: { email } })
     if (exists) return NextResponse.json({ error: 'Email already registered' }, { status: 400 })
 
@@ -31,8 +38,15 @@ export async function POST(req: NextRequest) {
     })
 
     return NextResponse.json({ id: user.id, email: user.email, name: user.name })
-  } catch (error) {
+  } catch (error: any) {
     console.error('REGISTRATION ERROR:', error)
-    return NextResponse.json({ error: 'Registration failed' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Registration failed: ' + (error.message || 'Unknown error') },
+      { status: 500 }
+    )
   }
+}
+
+export async function GET() {
+  return NextResponse.json({ message: 'User registration endpoint' })
 }

@@ -4,6 +4,7 @@ import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import Link from 'next/link'
+import { AiAssistant } from '@/components/ai/AiAssistant'
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession()
@@ -69,6 +70,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <main className="flex-1 overflow-auto">
         {children}
       </main>
+
+      {/* AI Assistant */}
+      <AiAssistant />
     </div>
   )
 }
